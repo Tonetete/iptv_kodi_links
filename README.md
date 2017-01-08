@@ -17,3 +17,5 @@ En todos los casos el archivo `.m3u` debe estar ubicado en la misma carpeta que 
 
 Para su correcto funcionamiento es necesario tener instalado Python 3 o superior en tu ordenador.
 Puedes encontrarlo en este enlace: https://www.python.org/downloads/
+
+Necesitamos abrir un terminal o consola de comandos (símbolo del sistema) y dirigirnos a la carpeta donde se halla nuestro script mediante el comando cd. Por ejemplo, si la carpeta con el script se encuentra en el escritorio, pondremos el comando `cd C:\Usuarios\<nuestro usuario>\Escritorio\iptv_kodi_links` y ejecutamos con el comando citado arriba. No os olvidéis de poner vuestra lista m3u en la misma carpeta del script o de lo contrario no os funcionará.
