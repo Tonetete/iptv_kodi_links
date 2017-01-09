@@ -25,9 +25,9 @@ if $foundFile; then
   echo "Archivo m3u encontrado: $file"
   echo "Ejecutando script, por favor espera..."
   if [ "$value" == "" ]; then
-    python3 iptv_plex_links.py --file="tv_channels_iragon-fc_plus.m3u" --all
+    python3 iptv_plex_links.py --file="$file" --all
   else
-    python3 iptv_plex_links.py --file="tv_channels_iragon-fc_plus.m3u" --name="$value"
+    python3 iptv_plex_links.py --file="$file" --name="$value"
   fi
   echo "Archivos creados!"
 
