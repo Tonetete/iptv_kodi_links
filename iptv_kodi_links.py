@@ -2,7 +2,7 @@ import sys, os, re, tkinter.filedialog, optparse
 
 # ===== METHODS ======
 
-class IPTV_PLEX_LINKS(object):
+class IPTV_KODI_LINKS(object):
 
     sections = ['--ES: VOD SERIES', '--ES: VOD DOCUMENTALES', '--ES: VOD CINE', '--ES: VOD ANIME' \
         , '--ES: VOD CLASICAS', '--ES: VOD MUSICAL', '--ES: VOD INFANTIL', '--ES: VOD ADULTOS']
@@ -18,7 +18,7 @@ class IPTV_PLEX_LINKS(object):
         self.createFiles()
 
     def createFiles(self):
-        f = open(self.filename)
+        f = open(self.filename, encoding="utf8")
         lines = f.readlines()
         for index, line in enumerate(lines):
             pattern_group_title = re.findall('group-title="(.*?)"', line)
@@ -30,6 +30,7 @@ class IPTV_PLEX_LINKS(object):
                         if len(pattern_name) == 1:
                             name_file = re.findall('-(.*-?)', pattern_tvg_name[0])
                             if self.saveSeasonEpisodes(name_file[0], pattern_group_title[0], lines[index+1]) is None:
+                                pattern_group_title[0] = self.removeSpecialCharFolderName(pattern_group_title[0])
                                 self.createDirectory(self.directory + '/' + pattern_group_title[0])
                                 self.saveFile(self.directory + '/' + pattern_group_title[0] + '/' + name_file[0], lines[index+1])
                     elif self.option == 'all':
@@ -37,14 +38,19 @@ class IPTV_PLEX_LINKS(object):
                         # Not a series type, so we don't care to save in a folder series and assign patterns
                         name_file = re.findall('-(.*-?)', pattern_tvg_name[0])
                         if pattern_group_title[0] not in self.series:
+                            pattern_group_title[0] = self.removeSpecialCharFolderName(pattern_group_title[0])
                             self.createDirectory(self.directory + '/' + pattern_group_title[0])
                             self.saveFile(self.directory + '/' + pattern_group_title[0] + '/' + name_file[0], lines[index + 1])
                         else:
                             if self.saveSeasonEpisodes(name_file[0], pattern_group_title[0], lines[index + 1]) is None:
+                                pattern_group_title[0] = self.removeSpecialCharFolderName(pattern_group_title[0])
                                 self.createDirectory(self.directory + '/' + pattern_group_title[0])
                                 self.saveFile(self.directory + '/' + pattern_group_title[0] + '/' + name_file[0],
                                               lines[index + 1])
 
+    def removeSpecialCharFolderName(self, name):
+        pattern_path = re.compile('([^\s\w]|_)+')
+        return pattern_path.sub('', name)
 
     def saveFile(self, name, url):
         file = open(name + '.strm', 'w+')
@@ -63,6 +69,7 @@ class IPTV_PLEX_LINKS(object):
         if pattern:
             pattern_season_ep = pattern.group(0)
             name = self.getName(name, pattern_season_ep)
+            section = self.removeSpecialCharFolderName(section)
             self.createDirectory(self.directory + '/' + section + '/' + name)
             self.saveFile(self.directory + '/' + section + '/' + name + '/' + pattern_season_ep, url)
             return True
@@ -74,12 +81,16 @@ class IPTV_PLEX_LINKS(object):
         name = name.split(pattern_season_ep)
         pattern_name = re.compile('([^\s\w]|_)+')
         stripped_name = pattern_name.sub('', name[0])
+        stripped_name = stripped_name.lstrip()
         stripped_name = stripped_name.rstrip()
         return self.unCamel(stripped_name)
 
     def createDirectory(self, path):
         if not os.path.exists(path):
-            os.makedirs(path)
+            try:
+                os.makedirs(path)
+            except OSError:
+                print('cannot create directory in ' + path)
 
 
     def unCamel(self, x):
@@ -136,8 +147,7 @@ directory = tkinter.filedialog.askdirectory(**options_dir)
 
 if len(directory) != 0:
     try:
-        iptv_plex_links = IPTV_PLEX_LINKS(directory, option, options_parser.file_option)
+        iptv_kodi_links = IPTV_KODI_LINKS(directory, option, options_parser.file_option)
         print('Proceso finalizado!')
     except OSError:
-        "Error trying to read file"
-
+        print("Error trying to read file")
