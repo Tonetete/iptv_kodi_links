@@ -147,7 +147,8 @@ directory = tkinter.filedialog.askdirectory(**options_dir)
 
 if len(directory) != 0:
     try:
+        print('Ejecutando script, por favor espera un momento...')
         iptv_kodi_links = IPTV_KODI_LINKS(directory, option, options_parser.file_option)
         print('Proceso finalizado!')
     except OSError:
-        print("Error trying to read file")
+        print("Error al leer el archivo m3u")
