@@ -40,15 +40,18 @@ class IPTV_KODI_LINKS(object):
                         if pattern_group_title[0] not in self.series:
                             pattern_group_title[0] = self.removeSpecialCharFolderName(pattern_group_title[0])
                             self.createDirectory(self.directory + '/' + pattern_group_title[0])
+                            name_file[0] = self.getNameFilm(name_file[0])
                             self.saveFile(self.directory + '/' + pattern_group_title[0] + '/' + name_file[0], lines[index + 1])
                         else:
                             if self.saveSeasonEpisodes(name_file[0], pattern_group_title[0], lines[index + 1]) is None:
+                                name_file[0] = self.removeSpecialCharFolderName(name_file[0])
                                 pattern_group_title[0] = self.removeSpecialCharFolderName(pattern_group_title[0])
                                 self.createDirectory(self.directory + '/' + pattern_group_title[0])
                                 self.saveFile(self.directory + '/' + pattern_group_title[0] + '/' + name_file[0],
                                               lines[index + 1])
 
     def removeSpecialCharFolderName(self, name):
+        name = name.replace('.', ' ')
         pattern_path = re.compile('([^\s\w]|_)+')
         return pattern_path.sub('', name)
 
@@ -68,7 +71,7 @@ class IPTV_KODI_LINKS(object):
 
         if pattern:
             pattern_season_ep = pattern.group(0)
-            name = self.getName(name, pattern_season_ep)
+            name = self.getNameEpisode(name, pattern_season_ep)
             section = self.removeSpecialCharFolderName(section)
             self.createDirectory(self.directory + '/' + section + '/' + name)
             self.saveFile(self.directory + '/' + section + '/' + name + '/' + pattern_season_ep, url)
@@ -77,12 +80,17 @@ class IPTV_KODI_LINKS(object):
         else:
             return None
 
-    def getName(self, name, pattern_season_ep):
+    def getNameEpisode(self, name, pattern_season_ep):
         name = name.split(pattern_season_ep)
-        pattern_name = re.compile('([^\s\w]|_)+')
-        stripped_name = pattern_name.sub('', name[0])
+        stripped_name = self.removeSpecialCharFolderName(name[0])
         stripped_name = stripped_name.lstrip()
         stripped_name = stripped_name.rstrip()
+        return self.unCamel(stripped_name)
+
+    def getNameFilm(self, name):
+        name = name.replace('.', ' ')
+        pattern_name = re.compile('([^\s\w]|_)+')
+        stripped_name = pattern_name.sub('', name)
         return self.unCamel(stripped_name)
 
     def createDirectory(self, path):
