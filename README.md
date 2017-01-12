@@ -31,3 +31,10 @@ Necesitamos abrir una consola de comandos (símbolo del sistema) y dirigirnos a 
 - Si queremos obtener todas las series y películas, ejecutaremos el script mediante el comando en la terminal: `py iptv_kodi_links.py --file="<nombre_archivo_m3u>.m3u" --all`
 
 - Si queremos obtener los enlaces de una serie en concreto, ejecutaremos el script mediante el comando en la terminal: `py iptv_kodi_links.py --file="<nombre_archivo_m3u>.m3u" --name="<nombre_serie>"`con el comando citado arriba. No os olvidéis de poner vuestra lista m3u en la misma carpeta del script o de lo contrario no os funcionará.
+
+#### Troubleshooting
+
+Es posible que el script presente problemas de que no encuentra el módulo `tkinter` en linux. Para intentar solucionarlo ejecutad los comandos siguientes:
+
+`sudo apt-get install python3-tk tk` y `sudo apt-get install tk-devel` y luego reinstalar python.
+
